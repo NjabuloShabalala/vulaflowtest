@@ -1,0 +1,108 @@
+/* ---- Fonts ----
+   Headings: Cooper BT (interim stand-in: Caprasimo). Body: ITC Avant Garde Gothic (interim stand-in: Jost).
+   The stand-ins are open-licence fonts hosted on this site, so no request goes to Google.
+   To switch to the licensed fonts, upload the web font files to /fonts/ and add the block below
+   (see the note at the bottom of this section). */
+@font-face{font-family:'Jost';src:url(fonts/jost-latin-400-normal.woff2) format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Jost';src:url(fonts/jost-latin-500-normal.woff2) format('woff2');font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:'Jost';src:url(fonts/jost-latin-600-normal.woff2) format('woff2');font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:'Jost';src:url(fonts/jost-latin-700-normal.woff2) format('woff2');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'Caprasimo';src:url(fonts/caprasimo-latin-400-normal.woff2) format('woff2');font-weight:400;font-style:normal;font-display:swap}
+:root{
+  --font-display:'Cooper BT','Caprasimo',Georgia,serif;
+  --font-body:'ITC Avant Garde Gothic','Avant Garde','Jost',system-ui,sans-serif;
+}
+/* Caprasimo has one weight, so stop the browser faking a bold. Remove this rule once Cooper BT files are added. */
+[style*="var(--font-display)"],.serif,.doc h2,.door h2{font-weight:400 !important;font-synthesis:none}
+/* LICENSED FONTS: uncomment and match the file names to what you upload.
+@font-face{font-family:'ITC Avant Garde Gothic';src:url(fonts/AvantGarde-Book.woff2) format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'ITC Avant Garde Gothic';src:url(fonts/AvantGarde-Medium.woff2) format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'ITC Avant Garde Gothic';src:url(fonts/AvantGarde-Demi.woff2) format('woff2');font-weight:600;font-display:swap}
+@font-face{font-family:'ITC Avant Garde Gothic';src:url(fonts/AvantGarde-Bold.woff2) format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'Cooper BT';src:url(fonts/CooperBT-Medium.woff2) format('woff2');font-weight:400;font-display:swap}
+*/
+:root{
+  --accent:#C2512F;
+  --paper:#F7F4EC;
+  --sand:#EBE4D4;
+  --ink:#0F2A43;
+  --terracotta-dark:#A8431F;
+}
+html{scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none;transition:opacity 160ms ease-out,background-color 160ms ease-out}
+a:hover{opacity:.82}
+a:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+mark{background:#F4D98C;color:var(--ink);padding:0 2px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}a{transition:none}}
+
+/* Motion layer. Every effect here is switched off for visitors who ask their device for reduced motion. */
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:no-preference){
+  /* 1. Entrance: the two doors on the home page, and the hero on the buyer and supplier pages */
+  .door{transition:transform 260ms cubic-bezier(.2,.7,.2,1),box-shadow 260ms ease-out;animation:rise 600ms cubic-bezier(.2,.7,.2,1) backwards}
+  .door-supplier{animation-delay:120ms}
+  #top > div{animation:rise 600ms cubic-bezier(.2,.7,.2,1) backwards}
+
+  /* 2. Doors: lift on hover, arrow nudges forward */
+  .door:hover{transform:translateY(-6px);box-shadow:0 18px 36px -18px rgba(15,42,67,.45);opacity:1}
+  .door .go svg{transition:transform 220ms ease-out}
+  .door:hover .go svg{transform:translateX(4px)}
+
+  /* 3. Buttons that lead to sign-up: small lift on hover, press on click */
+  a[href^="signup.html"],.submit{transition:transform 180ms ease-out,box-shadow 180ms ease-out,opacity 160ms ease-out}
+  a[href^="signup.html"]:hover,.submit:hover{transform:translateY(-2px);box-shadow:0 10px 20px -12px rgba(15,42,67,.55)}
+  a[href^="signup.html"]:active,.submit:active{transform:none;box-shadow:none}
+
+  /* 4. Sections fade up once as they scroll into view (motion.js adds the classes) */
+  .js-motion .reveal{opacity:0;transform:translateY(16px);transition:opacity 520ms ease-out,transform 520ms cubic-bezier(.2,.7,.2,1)}
+  .js-motion .reveal.in{opacity:1;transform:none}
+
+  /* 5. Sign-up form: focus ring eases in, steps and the thank-you panel fade up */
+  input,select,textarea{transition:border-color 160ms ease-out,box-shadow 160ms ease-out}
+  input:focus,select:focus,textarea:focus{box-shadow:0 0 0 3px rgba(194,81,47,.18)}
+  #thanks:not([hidden]),#shared:not([hidden]),#s-buyer:not([hidden]),#s-supplier:not([hidden]){animation:rise 360ms ease-out backwards}
+}
+
+/* Spatial navigation. The door you pick on the home page grows into that page, and Back shrinks it
+   to where it came from. Browsers without cross-page view transitions simply change page as before.
+   Only the shapes' size, position and opacity move, and it is all off for reduced motion. */
+@media (prefers-reduced-motion:no-preference){
+  @view-transition{navigation:auto}
+  .door-buyer,.vt-buyer{view-transition-name:door-buyer}
+  .door-supplier,.vt-supplier{view-transition-name:door-supplier}
+
+  ::view-transition-group(root){animation-duration:260ms}
+  ::view-transition-old(root){animation:220ms ease-out both vt-out}
+  ::view-transition-new(root){animation:300ms ease-out both vt-in}
+
+  ::view-transition-group(door-buyer),::view-transition-group(door-supplier){
+    animation-duration:400ms;animation-timing-function:cubic-bezier(.2,.7,.2,1)}
+  ::view-transition-image-pair(door-buyer),::view-transition-image-pair(door-supplier){
+    overflow:hidden;border-radius:0;animation:vt-round-off 400ms cubic-bezier(.2,.7,.2,1) both}
+  ::view-transition-old(door-buyer),::view-transition-new(door-buyer),
+  ::view-transition-old(door-supplier),::view-transition-new(door-supplier){height:100%;width:100%;object-fit:cover}
+
+  /* Back is a little quicker, and the page shrinks back into the door */
+  html[data-vt-dir="back"]::view-transition-group(door-buyer),
+  html[data-vt-dir="back"]::view-transition-group(door-supplier){animation-duration:280ms}
+  html[data-vt-dir="back"]::view-transition-image-pair(door-buyer),
+  html[data-vt-dir="back"]::view-transition-image-pair(door-supplier){animation:vt-round-on 280ms cubic-bezier(.2,.7,.2,1) both}
+  html[data-vt-dir="back"]::view-transition-old(root){animation-duration:160ms}
+  html[data-vt-dir="back"]::view-transition-new(root){animation-duration:220ms}
+
+  /* The door arriving by transition must not also play its own entrance */
+  html[data-vt] .door{animation:none}
+}
+@keyframes vt-out{to{opacity:0}}
+@keyframes vt-in{from{opacity:0}}
+@keyframes vt-round-off{from{border-radius:999px 999px 6px 6px}to{border-radius:0}}
+@keyframes vt-round-on{from{border-radius:0}to{border-radius:999px 999px 6px 6px}}
+@media print{.reveal{opacity:1 !important;transform:none !important}}
