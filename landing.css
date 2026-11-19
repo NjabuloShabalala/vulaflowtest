@@ -1,0 +1,179 @@
+/* ===== VulaFlow landing: scroll story =====
+   Three parts: a falling wordmark, the opening line, and the two doors.
+   Without JavaScript, or when the visitor asks for reduced motion, the parts simply stack
+   as normal sections and nothing moves. The story layout only applies under .js-story. */
+
+.wrap{padding:0 clamp(20px,5vw,64px)}
+.inner{max-width:1200px;margin:0 auto}
+.eyebrow{margin:0;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+
+/* Header stays on screen so people can always jump to a page */
+.site-head{position:fixed;top:0;left:0;right:0;z-index:40;background:rgba(247,244,236,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.site-head .inner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 32px;padding:18px 0}
+.site-head nav{display:flex;flex-wrap:wrap;gap:12px 32px;font-size:15px;font-weight:500}
+
+/* ---- Part 1: wordmark ---- */
+.hero{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:96px clamp(16px,4vw,48px) 72px}
+.wordmark{
+  margin:20px 0 0;font-family:var(--font-display);font-weight:400;
+  font-size:min(17vw,30svh);line-height:1;letter-spacing:-.02em;white-space:nowrap;color:var(--ink)
+}
+.wordmark .fl{color:var(--terracotta-dark)}
+.lt{display:inline-block;will-change:transform,opacity}
+.lg{display:inline-block}
+
+/* ---- Part 2: opening line ---- */
+.mid{padding:72px clamp(20px,5vw,64px);text-align:center}
+.mid .eyebrow{display:none}
+.js-story .mid .eyebrow{display:block}
+.mid h1{margin:24px auto 0;max-width:980px;font-family:var(--font-display);font-weight:400;font-size:clamp(40px,6.2vw,80px);line-height:1.06;letter-spacing:-.02em}
+.mid h1 em{font-style:normal;color:var(--terracotta-dark)}
+.mid p.sub{margin:28px auto 0;max-width:600px;font-size:clamp(18px,2vw,21px);line-height:1.6;color:#3D4F61}
+
+/* The three documents: only used in the story */
+.docs{display:none}
+.scroll-cue{display:none}
+
+/* ---- Part 3: doors ---- */
+.doors-sec{position:relative;padding:48px clamp(20px,5vw,64px) 112px;overflow:clip}
+.panel{
+  position:relative;max-width:1200px;margin:0 auto;
+  background:var(--sand);border-radius:28px;
+  padding:clamp(24px,4.5vw,56px);
+  display:flex;flex-wrap:wrap;justify-content:center;gap:32px
+}
+.vdoor{
+  position:relative;flex:1 1 340px;max-width:520px;min-width:0;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  padding:clamp(72px,9vw,112px) clamp(28px,4vw,48px) 44px;
+  border-radius:999px 999px 6px 6px;
+}
+.vdoor-buyer{background:var(--ink);color:var(--paper)}
+.vdoor-supplier{background:var(--terracotta-dark);color:#FFFFFF}
+.vdoor .eyebrow{margin:0}
+.vdoor-buyer .eyebrow{color:#E58A66}
+.vdoor-supplier .eyebrow{color:#FFE3D4}
+.vdoor h2{margin:20px 0 0;font-family:var(--font-display);font-weight:400;font-size:clamp(28px,3.2vw,38px);line-height:1.12;letter-spacing:-.015em}
+/* The heading link covers the whole door, so the door opens its page, and the button sits above it */
+.vdoor h2 a::after{content:"";position:absolute;inset:0;border-radius:inherit;z-index:1}
+.vdoor h2 a:focus-visible{outline:none}
+.vdoor h2 a:focus-visible::after{outline:3px solid var(--paper);outline-offset:-10px}
+.vdoor p.desc{margin:18px 0 0;font-size:18px;line-height:1.55;max-width:380px}
+.vdoor-buyer .desc{color:rgba(247,244,236,.88)}
+.vdoor-supplier .desc{color:#FFFFFF}
+.vdoor .reply{margin:14px 0 0;font-size:14px;line-height:1.4}
+.vdoor-buyer .reply{color:rgba(247,244,236,.78)}
+.vdoor-supplier .reply{color:rgba(255,255,255,.88)}
+/* Faint document lines show while the door is still a document */
+.vdoor::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  opacity:calc(1 - var(--c,1));
+  background:
+    linear-gradient(rgba(247,244,236,.4),rgba(247,244,236,.4)) 14% 9%/38% 3.4% no-repeat,
+    linear-gradient(rgba(247,244,236,.22),rgba(247,244,236,.22)) 14% 22%/72% 1.4% no-repeat,
+    linear-gradient(rgba(247,244,236,.22),rgba(247,244,236,.22)) 14% 29%/64% 1.4% no-repeat,
+    linear-gradient(rgba(247,244,236,.22),rgba(247,244,236,.22)) 14% 36%/70% 1.4% no-repeat,
+    linear-gradient(rgba(247,244,236,.22),rgba(247,244,236,.22)) 14% 43%/52% 1.4% no-repeat;
+}
+.vc{opacity:var(--c,1)}
+
+/* ---- Interactive hover button (plain CSS version of the shadcn component) ---- */
+.ihb{
+  position:relative;z-index:2;display:inline-block;overflow:hidden;cursor:pointer;
+  margin-top:32px;min-width:240px;padding:16px 28px;border-radius:999px;
+  border:1px solid var(--paper);background:var(--paper);color:var(--ink);
+  font-weight:600;font-size:16px;line-height:1.3;text-align:center;
+}
+.ihb .t{display:inline-block;transform:translateX(4px);transition:transform .3s,opacity .3s}
+.ihb .h{
+  position:absolute;top:0;left:0;z-index:10;width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  color:var(--paper);opacity:0;transform:translateX(48px);transition:transform .3s,opacity .3s
+}
+.ihb .dot{
+  position:absolute;left:8%;top:40%;width:8px;height:8px;border-radius:8px;
+  transform:scale(1);transition:all .3s
+}
+.vdoor-buyer .ihb .dot{background:var(--accent)}
+.vdoor-supplier .ihb .dot{background:var(--ink)}
+.ihb:hover .t,.ihb:focus-visible .t{transform:translateX(48px);opacity:0}
+.ihb:hover .h,.ihb:focus-visible .h{transform:translateX(-4px);opacity:1}
+.ihb:hover .dot,.ihb:focus-visible .dot{left:0;top:0;width:100%;height:100%;transform:scale(1.8)}
+.ihb:hover{opacity:1}
+.ihb:focus-visible{outline:3px solid var(--paper);outline-offset:3px}
+.ihb:focus-visible{box-shadow:0 0 0 6px var(--ink)}
+.vdoor-supplier .ihb:focus-visible{box-shadow:0 0 0 6px var(--terracotta-dark)}
+@media (prefers-reduced-motion:reduce){
+  .ihb .t,.ihb .h,.ihb .dot{transition:none}
+}
+
+.site-foot{border-top:1px solid rgba(15,42,67,.14);padding:32px 0 48px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 32px;font-size:14px;color:#4A5B6C}
+.site-foot span.links{display:flex;flex-wrap:wrap;gap:24px}
+
+/* ============ Story mode (JavaScript on, motion allowed) ============ */
+.js-story .story{height:360svh;position:relative}
+.js-story .stage{position:sticky;top:0;height:100svh;overflow:hidden;z-index:1}
+.js-story .hero{position:absolute;inset:0;z-index:1;min-height:0}
+.js-story .sheet{
+  position:absolute;inset:0;z-index:3;background:var(--paper);
+  border-radius:28px 28px 0 0;box-shadow:0 -12px 40px rgba(15,42,67,.12);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transform:translateY(100%);will-change:transform;padding-top:72px
+}
+.js-story .mid{padding-top:0;padding-bottom:0}
+
+/* Falling letters */
+.js-story .lg{animation:vf-drop 1.05s both}
+@keyframes vf-drop{
+  0%{transform:translateY(-120svh) rotate(var(--r,-8deg));animation-timing-function:cubic-bezier(.5,0,.9,.55)}
+  58%{transform:translateY(0) rotate(0deg);animation-timing-function:cubic-bezier(.2,.7,.3,1)}
+  76%{transform:translateY(-4%)}
+  100%{transform:translateY(0)}
+}
+
+/* Documents */
+.js-story .docs{display:block;position:absolute;inset:0;z-index:2;pointer-events:none}
+.doc{
+  --dw:clamp(104px,24vmin,230px);
+  position:absolute;left:calc(50% + var(--ox));top:52%;
+  width:var(--dw);height:calc(var(--dw)*1.32);
+  margin:calc(var(--dw)*-.66) 0 0 calc(var(--dw)/-2);
+  border-radius:8px;opacity:0;will-change:transform,opacity;
+  box-shadow:0 14px 34px rgba(15,42,67,.18);
+}
+.doc .bar{position:absolute;left:14%;top:9%;width:38%;height:4.4%;border-radius:3px;background:currentColor;opacity:.45}
+.doc .ln{position:absolute;left:14%;height:1.8%;border-radius:2px;background:currentColor;opacity:.25}
+.doc .ln:nth-of-type(2){top:24%;width:72%}
+.doc .ln:nth-of-type(3){top:32%;width:62%}
+.doc .ln:nth-of-type(4){top:40%;width:70%}
+.doc .ln:nth-of-type(5){top:48%;width:48%}
+.doc-1{--ox:calc(var(--dw)*-1.15);background:var(--ink);color:var(--paper)}
+.doc-2{--ox:0px;background:var(--terracotta-dark);color:#FFFFFF}
+.doc-3{--ox:calc(var(--dw)*1.15);background:var(--sand);color:var(--ink);border:1px solid rgba(15,42,67,.14)}
+
+/* Scroll cue */
+.js-story .scroll-cue{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  position:absolute;left:50%;bottom:22px;z-index:5;transform:translateX(-50%);
+  font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);
+  opacity:0;animation:vf-cue-in .6s 2.1s forwards;pointer-events:none
+}
+.scroll-cue i{position:relative;display:block;width:1px;height:44px;background:rgba(15,42,67,.25);overflow:hidden}
+.scroll-cue i::after{content:"";position:absolute;left:0;top:-40%;width:1px;height:40%;background:var(--accent);animation:vf-cue 1.8s ease-in-out infinite}
+@keyframes vf-cue{0%{top:-40%}100%{top:100%}}
+@keyframes vf-cue-in{to{opacity:var(--cue,1)}}
+.js-story.cue-set .scroll-cue{animation:none;opacity:var(--cue,0)}
+
+@media print{
+  .js-story .story{height:auto}
+  .js-story .stage{position:static;height:auto;overflow:visible}
+  .js-story .hero,.js-story .sheet{position:static;transform:none !important}
+  .js-story .docs,.scroll-cue{display:none !important}
+  .lt,.vdoor,.panel,.vc{transform:none !important;opacity:1 !important}
+}
+
+/* Door-to-page transition names, as on the other pages */
+@media (prefers-reduced-motion:no-preference){
+  .vdoor-buyer{view-transition-name:door-buyer}
+  .vdoor-supplier{view-transition-name:door-supplier}
+}
