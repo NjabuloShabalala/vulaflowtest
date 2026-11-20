@@ -129,7 +129,7 @@
       if (p >= 1) { el.style.transform = ''; }
       else el.style.transform = 'translate3d(0,' + ty2.toFixed(1) + 'px,0) rotate(' + rot2.toFixed(2) + 'deg) scale(' + scl.toFixed(3) + ')';
       if (n === 0) {
-        el.style.borderRadius = (8 + 20 * pe).toFixed(1) + 'px';
+        el.style.borderRadius = (8 + 4 * pe).toFixed(1) + 'px';
       } else {
         var top = 6 + 300 * smooth(clamp((p - .1) / .7));
         el.style.borderRadius = top.toFixed(1) + 'px ' + top.toFixed(1) + 'px 6px 6px';
