@@ -179,11 +179,7 @@
   .lt,.vdoor,.panel,.vc{transform:none !important;opacity:1 !important}
 }
 
-/* Door-to-page transition names, as on the other pages */
-@media (prefers-reduced-motion:no-preference){
-  .vdoor-buyer{view-transition-name:door-buyer}
-  .vdoor-supplier{view-transition-name:door-supplier}
-}
+/* The home doors no longer use the door-morph view transition; the opening animation in landing.js replaces it. */
 
 /* Dark top bar while it sits over the navy section; the cue turns light too */
 .site-head{transition:background-color .25s,color .25s}
@@ -192,3 +188,12 @@
 .scroll-cue.on-dark{color:var(--paper)}
 .scroll-cue.on-dark i{background:rgba(247,244,236,.3)}
 @media (prefers-reduced-motion:reduce){.site-head{transition:none}}
+
+/* ---- Door opening (plain click on a door; built by landing.js) ---- */
+.dx-veil{position:fixed;inset:0;z-index:150;background:var(--paper);opacity:0;pointer-events:none}
+.dx{position:fixed;z-index:160;pointer-events:none;perspective:1400px;will-change:transform}
+.dx-frame{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at 50% 55%,#FFF6E2 0%,#FFE0A8 45%,#F3B56C 100%);box-shadow:inset 0 0 40px rgba(194,81,47,.35)}
+.dx-leaf{position:absolute;inset:0;overflow:hidden;transform-origin:0 50%;backface-visibility:hidden;will-change:transform}
+.dx-leaf .vdoor{position:absolute;inset:0;flex:none;width:100%;height:100%;max-width:none;margin:0;transform:none}
+.dx-leaf::after{content:"";position:absolute;right:9%;top:56%;width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.75);z-index:3}
+.dx-flood{position:fixed;inset:0;z-index:170;background:#FFEFD0;opacity:0;pointer-events:none}
