@@ -111,7 +111,7 @@
 .site-foot span.links{display:flex;flex-wrap:wrap;gap:24px}
 
 /* ============ Story mode (JavaScript on, motion allowed) ============ */
-.js-story .story{height:360svh;position:relative}
+.js-story .story{height:250svh;position:relative}
 .js-story .stage{position:sticky;top:0;height:100svh;overflow:hidden;z-index:1}
 .js-story .hero{position:absolute;inset:0;z-index:1;min-height:0}
 .js-story .sheet{

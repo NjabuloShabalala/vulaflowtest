@@ -63,7 +63,8 @@
     /* ---- story progress, 0 at the top to 1 when the pin releases ---- */
     var r = story.getBoundingClientRect();
     var span = story.offsetHeight - vh;
-    var P = span > 0 ? clamp(-r.top / span) : 0;
+    // The story finishes at 85% of the pinned distance, so there is no dead scroll at the end.
+    var P = span > 0 ? clamp(-r.top / (span * .85)) : 0;
 
     // letters scatter left to right and fall
     for (var i = 0; i < letters.length; i++) {
@@ -103,16 +104,27 @@
     /* ---- Part 3: documents become the doors ---- */
     var sr = dsec.getBoundingClientRect();
     var items = [panel].concat(doorEls);
+    var narrow = vw < 760;              // doors stack in one column on phones
     for (var n = 0; n < items.length; n++) {
       var el = items[n];
       var y0 = offsetIn(el, dsec);
-      var delay = n === 0 ? 0 : .1 + (n - 1) * .1;
-      var p = clamp(((vh * .95 - (sr.top + y0)) / (vh * .62)) - delay);
+      // Phones: every door animates from its own position with no delay, so one door never
+      // moves over its neighbour. Wide screens keep a small stagger between the two doors.
+      var delay = narrow || n === 0 ? 0 : .06 + (n - 1) * .06;
+      var p = clamp(((vh * .95 - (sr.top + y0)) / (vh * (narrow ? .34 : .5))) - delay);
       var pe = easeOut(p);
-      var fall = -(y0 + el.offsetHeight + 80) * (n === 0 ? 1 : .35);
-      var ty2 = (1 - pe) * fall;
-      var rot2 = (1 - pe) * doorTilt[n];
-      var scl = .62 + .38 * pe;
+      var ty2, rot2, scl;
+      if (narrow) {
+        // phones: the panel stays put, each door just rises into place
+        ty2 = n === 0 ? 0 : (1 - pe) * 40;
+        rot2 = 0;
+        scl = n === 0 ? 1 : .94 + .06 * pe;
+      } else {
+        var fall = -(y0 + el.offsetHeight + 80) * (n === 0 ? 1 : .35);
+        ty2 = (1 - pe) * fall;
+        rot2 = (1 - pe) * doorTilt[n];
+        scl = .62 + .38 * pe;
+      }
       if (p >= 1) { el.style.transform = ''; }
       else el.style.transform = 'translate3d(0,' + ty2.toFixed(1) + 'px,0) rotate(' + rot2.toFixed(2) + 'deg) scale(' + scl.toFixed(3) + ')';
       if (n === 0) {
@@ -120,7 +132,7 @@
       } else {
         var top = 6 + 300 * smooth(clamp((p - .1) / .7));
         el.style.borderRadius = top.toFixed(1) + 'px ' + top.toFixed(1) + 'px 6px 6px';
-        el.style.setProperty('--c', clamp((p - .6) / .35).toFixed(3));
+        el.style.setProperty('--c', clamp((p - .5) / .4).toFixed(3));
       }
     }
   }
