@@ -107,8 +107,12 @@ mark{background:#F4D98C;color:var(--ink);padding:0 2px}
 @keyframes vt-round-on{from{border-radius:0}to{border-radius:999px 999px 6px 6px}}
 @media print{.reveal{opacity:1 !important;transform:none !important}}
 
-/* Door arrival: door-arrive.js adds html.door-arrive after a door opening, so the next page fades out of the same warm light. */
+/* Arrival after a door opens: the page starts as the same warm light and clears away.
+   The class is added by motion.js only when motion is allowed. */
 @media (prefers-reduced-motion:no-preference){
-  html.door-arrive::before{content:"";position:fixed;inset:0;z-index:9999;background:#FFEFD0;pointer-events:none;animation:door-light-out 480ms ease-out 60ms forwards}
+  html.door-arrive::before{
+    content:"";position:fixed;inset:0;z-index:9999;background:#FFF3DA;pointer-events:none;
+    animation:vf-arrive .75s cubic-bezier(.3,.6,.2,1) .05s both
+  }
+  @keyframes vf-arrive{from{opacity:1}to{opacity:0}}
 }
-@keyframes door-light-out{to{opacity:0;visibility:hidden}}

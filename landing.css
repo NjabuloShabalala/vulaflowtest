@@ -179,11 +179,6 @@
   .lt,.vdoor,.panel,.vc{transform:none !important;opacity:1 !important}
 }
 
-/* Door-to-page transition names, as on the other pages */
-@media (prefers-reduced-motion:no-preference){
-  .vdoor-buyer{view-transition-name:door-buyer}
-  .vdoor-supplier{view-transition-name:door-supplier}
-}
 
 /* Dark top bar while it sits over the navy section; the cue turns light too */
 .site-head{transition:background-color .25s,color .25s}
@@ -192,3 +187,15 @@
 .scroll-cue.on-dark{color:var(--paper)}
 .scroll-cue.on-dark i{background:rgba(247,244,236,.3)}
 @media (prefers-reduced-motion:reduce){.site-head{transition:none}}
+
+/* ---- Door opening scene (plays when a door is clicked; script adds these elements) ---- */
+.dr-scrim{position:fixed;inset:0;z-index:1000;background:var(--paper);opacity:0;pointer-events:none}
+.dr{position:fixed;z-index:1001;margin:0;pointer-events:none;perspective:1300px;will-change:transform}
+.dr-light{
+  position:absolute;inset:0;border-radius:999px 999px 6px 6px;
+  background:radial-gradient(ellipse at 50% 60%,#FFF8E6 0%,#FFF3DA 55%,#F8E4BF 100%);
+  box-shadow:0 0 90px 10px rgba(255,236,190,.85)
+}
+.dr-leaf{position:absolute;inset:0;margin:0;max-width:none;flex:none;transform-origin:0 50%;backface-visibility:hidden;will-change:transform;box-shadow:0 20px 50px rgba(15,42,67,.25)}
+.dr-veil{position:fixed;inset:0;z-index:1002;background:#FFF3DA;opacity:0;pointer-events:none}
+html.door-opening .vdoor.is-chosen{visibility:hidden}
