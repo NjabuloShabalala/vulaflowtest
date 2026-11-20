@@ -138,6 +138,91 @@
     }
   }
 
+
+  /* ---- Door opening: click a door and it centres, swings open, and you walk into the light ----
+     The links stay real. Only a plain left click is intercepted, so new-tab, copy-link and keyboard
+     Enter behave normally. If anything about the animation is unavailable we just follow the link. */
+  var opening = false, openScene = null;
+
+  function prefetch(href) {
+    if (prefetch.done[href]) return;
+    prefetch.done[href] = 1;
+    var l = document.createElement('link'); l.rel = 'prefetch'; l.href = href; document.head.appendChild(l);
+  }
+  prefetch.done = {};
+
+  function cleanupDoor() {                       // also used when Back returns to this page
+    if (openScene) { openScene.forEach(function (n) { if (n.parentNode) n.parentNode.removeChild(n); }); openScene = null; }
+    html.classList.remove('door-opening');
+    doorEls.forEach(function (d) { d.classList.remove('is-chosen'); });
+    window.removeEventListener('wheel', stopScroll, { passive: false });
+    window.removeEventListener('touchmove', stopScroll, { passive: false });
+    opening = false;
+  }
+  function stopScroll(e) { e.preventDefault(); }
+
+  function openDoor(door, href) {
+    if (opening) return;
+    if (!door.animate) { window.location.href = href; return; }
+    opening = true;
+    var vw2 = window.innerWidth, vh2 = window.innerHeight;
+    var rc = door.getBoundingClientRect();
+
+    // the scene: a veil over the page, a copy of the door that will move, and the light behind it
+    var scrim = document.createElement('div'); scrim.className = 'dr-scrim';
+    var dr = document.createElement('div'); dr.className = 'dr'; dr.setAttribute('aria-hidden', 'true');
+    dr.style.cssText = 'left:' + rc.left + 'px;top:' + rc.top + 'px;width:' + rc.width + 'px;height:' + rc.height + 'px';
+    var light = document.createElement('div'); light.className = 'dr-light';
+    var leaf = door.cloneNode(true);
+    leaf.className = door.className.replace('is-chosen', '') + ' dr-leaf';
+    leaf.removeAttribute('style'); leaf.style.setProperty('--c', '1');
+    leaf.style.borderRadius = '999px 999px 6px 6px';
+    [].forEach.call(leaf.querySelectorAll('a'), function (a) { a.removeAttribute('href'); a.tabIndex = -1; });
+    dr.appendChild(light); dr.appendChild(leaf);
+    var veil = document.createElement('div'); veil.className = 'dr-veil';
+    document.body.appendChild(scrim); document.body.appendChild(dr); document.body.appendChild(veil);
+    openScene = [scrim, dr, veil];
+    door.classList.add('is-chosen');
+    html.classList.add('door-opening');
+    window.addEventListener('wheel', stopScroll, { passive: false });       // hold the page still
+    window.addEventListener('touchmove', stopScroll, { passive: false });
+
+    // where the door needs to go: the middle of the screen, a little smaller if it is tall
+    var s1 = Math.min(1, vh2 * .8 / rc.height, vw2 * .9 / rc.width);
+    var dx = vw2 / 2 - (rc.left + rc.width / 2), dy = vh2 / 2 - (rc.top + rc.height / 2);
+    var centred = 'translate(' + dx + 'px,' + dy + 'px) scale(' + s1 + ')';
+    var S = Math.max(vw2 / rc.width, vh2 / rc.height) * 2.4;                // big enough to fill the screen
+
+    scrim.animate([{ opacity: 0 }, { opacity: .97 }], { duration: 300, easing: 'ease-out', fill: 'forwards' });
+    dr.animate([{ transform: 'translate(0,0) scale(1)' }, { transform: centred }],
+      { duration: 340, easing: 'cubic-bezier(.3,.7,.2,1)', fill: 'forwards' });
+    leaf.animate([{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(-104deg)' }],
+      { duration: 440, delay: 280, easing: 'cubic-bezier(.45,0,.25,1)', fill: 'forwards' });
+    dr.animate([{ transform: centred }, { transform: 'translate(' + dx + 'px,' + dy + 'px) scale(' + S + ')' }],
+      { duration: 300, delay: 660, easing: 'cubic-bezier(.6,0,.9,.4)', fill: 'forwards' });
+    veil.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 140, delay: 840, fill: 'forwards' });
+
+    // the next page picks up from the same light (see motion.js)
+    try { sessionStorage.setItem('vf-door', String(Date.now())); } catch (e) {}
+    prefetch(href);
+    setTimeout(function () { window.location.href = href; }, 1000);
+  }
+
+  doorEls.forEach(function (d) {
+    [].forEach.call(d.querySelectorAll('a[href]'), function (a) {
+      var warm = function () { prefetch(a.getAttribute('href')); };
+      a.addEventListener('pointerenter', warm); a.addEventListener('focus', warm);
+      a.addEventListener('touchstart', warm, { passive: true });
+      a.addEventListener('click', function (e) {
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        openDoor(d, a.getAttribute('href'));
+      });
+    });
+  });
+  // coming back with Back: reset the scene so the doors are normal again
+  window.addEventListener('pageshow', function (e) { if (e.persisted || opening) cleanupDoor(); });
+
   var ticking = false;
   function onScroll() {
     if (ticking) return;
