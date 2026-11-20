@@ -23,12 +23,12 @@
 .lg{display:inline-block}
 
 /* ---- Part 2: opening line ---- */
-.mid{padding:72px clamp(20px,5vw,64px);text-align:center}
-.mid .eyebrow{display:none}
+.mid{padding:96px clamp(20px,5vw,64px);text-align:center;background:var(--ink);color:var(--paper)}
+.mid .eyebrow{display:none;color:#E58A66 !important}
 .js-story .mid .eyebrow{display:block}
 .mid h1{margin:24px auto 0;max-width:980px;font-family:var(--font-display);font-weight:400;font-size:clamp(40px,6.2vw,80px);line-height:1.06;letter-spacing:-.02em}
-.mid h1 em{font-style:normal;color:var(--terracotta-dark)}
-.mid p.sub{margin:28px auto 0;max-width:600px;font-size:clamp(18px,2vw,21px);line-height:1.6;color:#3D4F61}
+.mid h1 em{font-style:normal;color:#E58A66}
+.mid p.sub{margin:28px auto 0;max-width:600px;font-size:clamp(18px,2vw,21px);line-height:1.6;color:rgba(247,244,236,.86)}
 
 /* The three documents: only used in the story */
 .docs{display:none}
@@ -115,21 +115,28 @@
 .js-story .stage{position:sticky;top:0;height:100svh;overflow:hidden;z-index:1}
 .js-story .hero{position:absolute;inset:0;z-index:1;min-height:0}
 .js-story .sheet{
-  position:absolute;inset:0;z-index:3;background:var(--paper);
-  border-radius:28px 28px 0 0;box-shadow:0 -12px 40px rgba(15,42,67,.12);
+  position:absolute;inset:0;z-index:3;background:var(--ink);color:var(--paper);
+  border-radius:28px;box-shadow:0 -12px 40px rgba(15,42,67,.18);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   transform:translateY(100%);will-change:transform;padding-top:72px
 }
-.js-story .mid{padding-top:0;padding-bottom:0}
+.js-story .mid{padding-top:0;padding-bottom:0;background:transparent}
 
-/* Falling letters */
-.js-story .lg{animation:vf-drop 1.05s both}
-@keyframes vf-drop{
-  0%{transform:translateY(-120svh) rotate(var(--r,-8deg));animation-timing-function:cubic-bezier(.5,0,.9,.55)}
-  58%{transform:translateY(0) rotate(0deg);animation-timing-function:cubic-bezier(.2,.7,.3,1)}
-  76%{transform:translateY(-4%)}
-  100%{transform:translateY(0)}
+/* Letters pop in with an elastic scale. One spring curve covers the whole move, so there are no
+   stops or speed jumps. Browsers that cannot read linear() use a simple overshoot instead. */
+:root{--spring:cubic-bezier(.34,1.56,.64,1)}
+@supports (animation-timing-function:linear(0,1)){
+  :root{--spring:linear(0, 0.0496, 0.1752, 0.3441, 0.5285, 0.7069, 0.864, 0.9909, 1.0839, 1.1435, 1.1733, 1.1786, 1.1656, 1.1406, 1.1092, 1.0761, 1.0449, 1.018, 0.9968, 0.9817, 0.9724, 0.9683, 0.9683, 0.9713, 0.9762, 0.982, 0.9879, 0.9933, 0.9979, 1.0014, 1.0038, 1.0052, 1.0057, 1.0056, 1.0049, 1.004, 1)}
 }
+.js-story .lg{
+  transform-origin:50% 100%;
+  animation:vf-pop 1.25s var(--spring) both,vf-fade .25s ease-out both;
+}
+@keyframes vf-pop{
+  from{transform:translateY(.5em) scale(.15)}
+  to{transform:translateY(0) scale(1)}
+}
+@keyframes vf-fade{from{opacity:0}to{opacity:1}}
 
 /* Documents */
 .js-story .docs{display:block;position:absolute;inset:0;z-index:2;pointer-events:none}
@@ -177,3 +184,11 @@
   .vdoor-buyer{view-transition-name:door-buyer}
   .vdoor-supplier{view-transition-name:door-supplier}
 }
+
+/* Dark top bar while it sits over the navy section; the cue turns light too */
+.site-head{transition:background-color .25s,color .25s}
+.site-head.head-dark{background:rgba(15,42,67,.92);color:var(--paper)}
+.site-head.head-dark a,.site-head.head-dark span{color:var(--paper)}
+.scroll-cue.on-dark{color:var(--paper)}
+.scroll-cue.on-dark i{background:rgba(247,244,236,.3)}
+@media (prefers-reduced-motion:reduce){.site-head{transition:none}}

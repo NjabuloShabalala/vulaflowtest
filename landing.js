@@ -13,6 +13,8 @@
   var docs = [].slice.call(document.querySelectorAll('.doc'));
   var sheet = document.getElementById('sheet');
   var cue = document.getElementById('cue');
+  var stage = document.getElementById('stage');
+  var head = document.querySelector('.site-head');
   var dsec = document.getElementById('doors-sec');
   var panel = document.getElementById('panel');
   var doorEls = [].slice.call(document.querySelectorAll('.vdoor'));
@@ -38,8 +40,8 @@
     var inner = document.createElement('span');
     inner.className = 'lg';
     inner.textContent = word.charAt(i);
-    inner.style.setProperty('--r', tilts[i] + 'deg');
-    inner.style.animationDelay = (150 + i * 90) + 'ms';
+    var d = (150 + i * 60) + 'ms';
+    inner.style.animationDelay = d + ', ' + d;   // pop and fade share the same delay
     outer.appendChild(inner);
     wordmark.appendChild(outer);
     letters.push(outer);
@@ -90,6 +92,12 @@
     // scroll cue: shown at the top, hidden while the story moves, shown again to point on
     var cueO = P < .06 ? 1 : P < .12 ? 1 - (P - .06) / .06 : P < .74 ? 0 : P < .84 ? (P - .74) / .1 : 1;
     cue.style.setProperty('--cue', cueO.toFixed(3));
+    cue.classList.toggle('on-dark', P > .5);
+
+    // top bar goes dark while the navy section is under it
+    var st = stage.getBoundingClientRect();
+    var sheetTop = st.top + (m >= 1 ? 0 : (1 - smooth(m)) * vh);
+    head.classList.toggle('head-dark', sheetTop < 34 && st.bottom > 34);
     if (!html.classList.contains('cue-set') && window.scrollY > 4) html.classList.add('cue-set');
 
     /* ---- Part 3: documents become the doors ---- */
