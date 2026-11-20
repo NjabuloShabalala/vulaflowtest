@@ -62,9 +62,10 @@
 
     /* ---- story progress, 0 at the top to 1 when the pin releases ---- */
     var r = story.getBoundingClientRect();
-    var span = story.offsetHeight - vh;
-    // The story finishes at 85% of the pinned distance, so there is no dead scroll at the end.
-    var P = span > 0 ? clamp(-r.top / (span * .85)) : 0;
+    // Progress is measured in a fixed scroll distance (1.275 screens), so the early timing stays
+    // the same. The pinned area ends just after the navy section lands (P about .77), which
+    // leaves no frozen scroll before the page moves on to the doors.
+    var P = clamp(-r.top / (vh * 1.275));
 
     // letters scatter left to right and fall
     for (var i = 0; i < letters.length; i++) {
@@ -91,7 +92,7 @@
     sheet.style.transform = m >= 1 ? 'translateY(0)' : 'translateY(' + ((1 - smooth(m)) * 100).toFixed(2) + '%)';
 
     // scroll cue: shown at the top, hidden while the story moves, shown again to point on
-    var cueO = P < .06 ? 1 : P < .12 ? 1 - (P - .06) / .06 : P < .74 ? 0 : P < .84 ? (P - .74) / .1 : 1;
+    var cueO = P < .06 ? 1 : P < .12 ? 1 - (P - .06) / .06 : P < .68 ? 0 : P < .75 ? (P - .68) / .07 : 1;
     cue.style.setProperty('--cue', cueO.toFixed(3));
     cue.classList.toggle('on-dark', P > .5);
 
